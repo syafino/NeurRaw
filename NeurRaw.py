@@ -31,9 +31,10 @@ biases = [2,3,0.5] #turn into matrices
 
 #do dot product instead cz its faster
 outputs = []
-for neuron_weights, neuron_biases in zip(weights,biases):
+
+for neuron_weights, neuron_biases in zip(weights,biases): #{ ([weight1: int1, 2 ,3], [b1]) } and then move on to w2,b2, etc..gi
     neuron_output = 0
-    for n_input, n_weights in zip(inputs, neuron_weights):
+    for n_input, n_weights in zip(inputs, neuron_weights): # {[inputs: int1,2,3 ][weight1: int1, 2 ,3] }
         neuron_output += n_input * n_weights
     neuron_output += neuron_biases
     outputs.append(neuron_output)
