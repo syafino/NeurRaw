@@ -1,29 +1,31 @@
 import numpy as np
-inputs = [[1,2,3,2.5],
-          [2,5,-1,2],
-          [-1.5,2.7,3.3,-0.8] 
-          ] #this is a 4x3, weights is a 4x3. Row and column must match in dot product. 
-            # 4 != 3. so we need to transpose weight (swap column with row) by np.array(weights).T in the outputs
-        
-weights = [[0.2,0.8,-0.5,1], 
-           [0.5,-0.91,0.26,-0.5], 
-           [-0.26,-0.27,0.17,0.87]
-           ] #3 neurons, 3 weights and biases
 
-biases = [2,3,0.5]
+np.random.seed(0)
 
-#4 input into 3 neuron; each neuron has its own setting almost like a dj set, so every input to every neuron is unique.
+X = [[1,2,3,2.5],
+    [2,5,-1,2],
+    [-1.5,2.7,3.3,-0.8] 
+    ] 
 
-#2nd hidden layer of neurons
-weights2 = [[0.1,-0.14,0.5], 
-           [-0.5,0.12,-0.33], 
-           [-0.44,0.73,-0.13]
-           ] #because the layer 1 has 3 neuron output, the input of layer 2 neurons is 3 inputs. therefore 3x3 is logical.
+#initializing a neural network = initializing weights and biases, usually random numbers between (-1,1). 
+#we want small values so the values tend to not explode into very large numbers 
+#weights are usually (-0.1,0.1) and biases are usually 0, but when like the weights and inputs are very small, 
+#it wont change a thing even after hundreds of layers, so maybe not 0. 
+class Layer_Dense:
+    def __init__(self, n_inputs, n_neurons):
+        self.weights = 0.1 * np.random.randn(n_inputs,n_neurons) 
+        #were making the column match the row of inputs, so we dont need to transpose the matrix
+        self.biases = np.zeros((1,n_neurons)) #creates an 1d array of 0s
+        #1,n_inputs is the shape. 1 dimensional, n_inputs index.
+    def forward(self,inputs):
+        self.output = np.dot(inputs,self.weights) + self.biases
 
-biases2 = [-1,2,-0.5]
+layer1 = Layer_Dense(4,5) #4 inputs, 5 neurons, 5 outputs
+layer2 = Layer_Dense(5,2) #5 inputs (to match layer1), 2 neurons, 2 outputs
 
-layer1_outputs = np.dot(inputs,np.array(weights).T) + biases
-layer2_outputs = np.dot(layer1_outputs,np.array(weights2).T) + biases2
+layer1.forward(X)
+print(layer1.output)
+print("l")
+layer2.forward(layer1.output)
+print (layer2.output)
 
-print(layer1_outputs)
-print(layer2_outputs)
