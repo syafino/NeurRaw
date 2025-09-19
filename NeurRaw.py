@@ -1,11 +1,11 @@
 import numpy as np
+import nnfs
 
-np.random.seed(0)
-
-X = [[1,2,3,2.5],
-    [2,5,-1,2],
-    [-1.5,2.7,3.3,-0.8] 
-    ] 
+nnfs.init() #initializes the random values.
+# X = [[1,2,3,2.5],
+#     [2,5,-1,2],
+#     [-1.5,2.7,3.3,-0.8] 
+#     ] 
 
 #initializing a neural network = initializing weights and biases, usually random numbers between (-1,1). 
 #we want small values so the values tend to not explode into very large numbers 
@@ -20,12 +20,33 @@ class Layer_Dense:
     def forward(self,inputs):
         self.output = np.dot(inputs,self.weights) + self.biases
 
-layer1 = Layer_Dense(4,5) #4 inputs, 5 neurons, 5 outputs
-layer2 = Layer_Dense(5,2) #5 inputs (to match layer1), 2 neurons, 2 outputs
+class Activation_ReLU: #Rectified linear function (if its below 0 , it outputs 0, if its above 0 it outputs its usual value)
+    def forward(self, inputs):
+        self.output = np.maximum(0,inputs) 
+        #numpy maximum compares first param with second param and maximum is outputed.
+        #therefore if 0 is compared with negative or 0 value, it will just output 0
 
-layer1.forward(X)
-print(layer1.output)
-print("l")
-layer2.forward(layer1.output)
-print (layer2.output)
+# https://cs231n.github.io/neural-networks-case-study/
+#This creates a dataset that resembles a spiral
+def create_data(points, classes):
+    X = np.zeros((points*classes, 2))
+    y = np.zeros(points*classes, dtype='uint8')
+    for class_number in range(classes):
+        ix = range(points*class_number, points*(class_number+1))
+        r = np.linspace(0.0, 1, points) # radius
+        t = np.linspace(class_number*4, (class_number+1)*4, points) + np.random.randn(points)*0.2
+        X[ix] = np.c_[r*np.sin(t*2.5), r*np.cos(t*2.5)]
+        y[ix] = class_number
+    return X, y
+
+
+X,y = create_data(100,3)
+layer1 = Layer_Dense(2,5) #2 inputs because x and y
+activation1 = Activation_ReLU()
+
+layer1.forward(X) #the dot product + biases
+activation1.forward(layer1.output)
+
+print(activation1.output)
+
 
