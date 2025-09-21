@@ -26,6 +26,12 @@ class Activation_ReLU: #Rectified linear function (if its below 0 , it outputs 0
         #numpy maximum compares first param with second param and maximum is outputed.
         #therefore if 0 is compared with negative or 0 value, it will just output 0
 
+class Activation_Softmax:
+    def forward(self, inputs):
+        exp_values = np.exp(inputs - np.max(inputs, axis = 1, keepdims=True)) #exponentiate the outputs, max = 0, to prevent overflow.
+        probabilities = exp_values/np.sum(exp_values, axis = 1, keepdims=True)
+        self.output = probabilities
+
 # https://cs231n.github.io/neural-networks-case-study/
 #This creates a dataset that resembles a spiral
 def create_data(points, classes):
@@ -41,12 +47,18 @@ def create_data(points, classes):
 
 
 X,y = create_data(100,3)
-layer1 = Layer_Dense(2,5) #2 inputs because x and y
+layer1 = Layer_Dense(2,3) #2 inputs because x and y
 activation1 = Activation_ReLU()
+
+layer2 = Layer_Dense(3,3)
+activation2 = Activation_Softmax()
 
 layer1.forward(X) #the dot product + biases
 activation1.forward(layer1.output)
 
-print(activation1.output)
+layer2.forward(activation1.output)
+activation2.forward(layer2.output)
+
+print(activation2.output[:5])
 
 
