@@ -45,6 +45,27 @@ def create_data(points, classes):
         y[ix] = class_number
     return X, y
 
+class Loss:
+    def calculate(self,output,y): #output is the values from neural network
+        sample_losses = self.forward(output,y)
+        data_loss = np.mean(sample_losses)
+        return data_loss
+
+class lcce(Loss): #Loss categorical cross entropy 
+    def forward(self, y_pred, y_true): #y_pred is value from neural network
+        samples = len(y_pred) #y_true is the target values from one hot encoding
+        y_pred_clipped = np.clip(y_pred, 1e-7, 1-1e-7)
+
+        if len(y_true.shape) == 1: #target values is in 1d array
+            correct_confidences = y_pred_clipped[range(samples), y_true] #range(samples) = the columns, row that gets inputted is from y_true
+        elif len(y_true.shape) == 2: #target values is in 2d array
+            correct_confidences = np.sum(y_pred_clipped*y_true, axis = 1)
+        neg_log_likelihoods = -np.log(correct_confidences)
+
+        return neg_log_likelihoods
+
+
+ 
 
 X,y = create_data(100,3)
 layer1 = Layer_Dense(2,3) #2 inputs because x and y
@@ -60,5 +81,10 @@ layer2.forward(activation1.output)
 activation2.forward(layer2.output)
 
 print(activation2.output[:5])
+
+loss_function = lcce()
+loss = loss_function.calculate(layer2.output, y)
+
+print("loss: ", loss)
 
 
