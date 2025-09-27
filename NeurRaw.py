@@ -86,5 +86,6 @@ loss_function = lcce()
 loss = loss_function.calculate(layer2.output, y)
 
 print("loss: ", loss)
+print(loss)
 
 
