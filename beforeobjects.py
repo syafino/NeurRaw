@@ -1,3 +1,5 @@
+# THIS FILE ISNT USED, MOVED TO NeurRaw.py FOR BETTER ORGANIZATION
+
 import numpy as np
 inputs = [[1,2,3,2.5],
           [2,5,-1,2],
